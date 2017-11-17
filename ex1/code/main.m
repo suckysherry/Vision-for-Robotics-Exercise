@@ -36,3 +36,38 @@ imshow(img);
 hold on;
 plot(projected_pts(1,:), projected_pts(2,:), 'r.', 'markersize', 12);
 hold off;
+
+%Draw the cube on the image
+offset_x = 4*0.04; offset_y = 2*0.04;
+s = 2*0.04;
+[X,Y,Z] = meshgrid(0:1, 0:1, -1:0);
+p_w_cube = [offset_x+X(:)*s, offset_y+Y(:)*s, Z(:)*s]';
+
+p_c_cube = T_C_W*[p_w_cube;ones(1,8)];
+p_c_cube = p_c_cube(1:3,:);
+
+cube_pts = projectPoints(p_c_cube, K, zeros(4,1));
+
+figure();
+imshow(img);
+hold on;
+line([cube_pts(1,1), cube_pts(1,2)],[cube_pts(2,1), cube_pts(2,2)],'color','r', 'linewidth', 3);
+line([cube_pts(1,1), cube_pts(1,3)],[cube_pts(2,1), cube_pts(2,3)],'color','r', 'linewidth', 3);
+line([cube_pts(1,2), cube_pts(1,4)],[cube_pts(2,2), cube_pts(2,4)],'color','r', 'linewidth', 3);
+line([cube_pts(1,3), cube_pts(1,4)],[cube_pts(2,3), cube_pts(2,4)],'color','r', 'linewidth', 3);
+
+line([cube_pts(1,1+4), cube_pts(1,2+4)],[cube_pts(2,1+4), cube_pts(2,2+4)],'color','r', 'linewidth', 3);
+line([cube_pts(1,1+4), cube_pts(1,3+4)],[cube_pts(2,1+4), cube_pts(2,3+4)],'color','r', 'linewidth', 3);
+line([cube_pts(1,2+4), cube_pts(1,4+4)],[cube_pts(2,2+4), cube_pts(2,4+4)],'color','r', 'linewidth', 3);
+line([cube_pts(1,3+4), cube_pts(1,4+4)],[cube_pts(2,3+4), cube_pts(2,4+4)],'color','r', 'linewidth', 3);
+
+line([cube_pts(1,1), cube_pts(1,1+4)],[cube_pts(2,1), cube_pts(2,1+4)], 'color', 'red', 'linewidth', 3);
+line([cube_pts(1,2), cube_pts(1,2+4)],[cube_pts(2,2), cube_pts(2,2+4)], 'color', 'red', 'linewidth', 3);
+line([cube_pts(1,3), cube_pts(1,3+4)],[cube_pts(2,3), cube_pts(2,3+4)], 'color', 'red', 'linewidth', 3);
+line([cube_pts(1,4), cube_pts(1,4+4)],[cube_pts(2,4), cube_pts(2,4+4)], 'color', 'red', 'linewidth', 3);
+hold off;
+
+%undistort image
+img_undistorted = undistortImage(img, K, D, 1);
+figure();
+imshow(img_undistorted);
